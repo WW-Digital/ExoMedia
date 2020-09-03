@@ -1,7 +1,5 @@
 apply plugin: 'com.android.library'
 
-group='com.github.WW-Digital'
-
 /**
  * Holds the information associated with the library needed for the
  * bintray plugin to publish the artifact
