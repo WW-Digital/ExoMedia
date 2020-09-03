@@ -3,7 +3,8 @@
  * purposes) and to push to jcenter for official releases
  */
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.jfrog.bintray'
 
 task androidJavaDoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
@@ -29,7 +30,7 @@ task androidSourcesJar(type: Jar) {
  * Bintray Deploy
  * `$ ./gradlew clean library:assembleRelease androidJavaDocJar androidSourcesJar generatePomFileForJcenterPublication bintrayUpload`
  */
-project.afterEvaluate {
+/*project.afterEvaluate {
     publishing {
         publications {
             jcenter(MavenPublication) {
@@ -46,9 +47,9 @@ project.afterEvaluate {
                 pom.withXml {
                     def rootNode = asNode().appendNode('dependencies')
 
-                    /**
+                    *//**
                      * Helper method to add dependencies to the POM node
-                     */
+                     *//*
                     ext.addDependency = { Node dependenciesNode, Dependency dependency, String dependencyScope ->
                         // We don't add incomplete dependencies
                         if (dependency.name == null ||
@@ -78,12 +79,13 @@ project.afterEvaluate {
             }
         }
     }
-}
+}*/
 
 
 /**
  * Configure the Bintray repository values
  */
+/*
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
@@ -105,4 +107,4 @@ bintray {
             released = new Date()
         }
     }
-}
+}*/
