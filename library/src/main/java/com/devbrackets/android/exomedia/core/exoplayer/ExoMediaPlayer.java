@@ -24,11 +24,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.support.annotation.FloatRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.Size;
-import android.support.v4.util.ArrayMap;
+import androidx.annotation.FloatRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.Size;
+import androidx.collection.ArrayMap;
 import android.util.Log;
 import android.view.Surface;
 
@@ -90,7 +90,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class ExoMediaPlayer extends Player.DefaultEventListener {
+public class ExoMediaPlayer implements Player.EventListener {
     private static final String TAG = "ExoMediaPlayer";
     private static final int BUFFER_REPEAT_DELAY = 1_000;
     private static final int WAKE_LOCK_TIMEOUT = 1_000;
@@ -126,7 +126,7 @@ public class ExoMediaPlayer extends Player.DefaultEventListener {
     @NonNull
     private List<Renderer> renderers;
     @NonNull
-    private DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+    private DefaultBandwidthMeter bandwidthMeter;
 
     @Nullable
     private CaptionListener captionListener;
@@ -165,11 +165,12 @@ public class ExoMediaPlayer extends Player.DefaultEventListener {
 
         renderers = rendererProvider.generate();
 
-        adaptiveTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        adaptiveTrackSelectionFactory = new AdaptiveTrackSelection.Factory();
         trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
+        bandwidthMeter = new DefaultBandwidthMeter.Builder(context).build();
 
         LoadControl loadControl = ExoMedia.Data.loadControl != null ? ExoMedia.Data.loadControl : new DefaultLoadControl();
-        player = ExoPlayerFactory.newInstance(renderers.toArray(new Renderer[renderers.size()]), trackSelector, loadControl);
+        player = ExoPlayerFactory.newInstance(context, renderers.toArray(new Renderer[renderers.size()]), trackSelector, loadControl, bandwidthMeter, Util.getLooper());
         player.addListener(this);
         analyticsCollector = new AnalyticsCollector.Factory().createAnalyticsCollector(player, Clock.DEFAULT);
         player.addListener(analyticsCollector);
